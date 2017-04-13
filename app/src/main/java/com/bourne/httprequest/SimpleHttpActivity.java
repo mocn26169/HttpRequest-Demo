@@ -23,6 +23,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+
+
 /**
  * HttpURLConnection分别实现图片，文本，文件的请求
  */
@@ -40,6 +42,7 @@ public class SimpleHttpActivity extends AppCompatActivity implements View.OnClic
 
     protected static final int TEXT_SUCCESS = 5;
     protected static final int TEXT_ERROR = 6;
+    protected static final int FILE_SUCCESS = 7;
 
     //1.在主线程里面声明消息处理器 handler
     private Handler handler = new Handler() {
@@ -51,7 +54,7 @@ public class SimpleHttpActivity extends AppCompatActivity implements View.OnClic
                     //3.处理消息 运行在主线程
                     Bitmap bitmap = (Bitmap) msg.obj;
                     imageView.setImageBitmap(bitmap);
-                    Toast.makeText(SimpleHttpActivity.this, "使用缓存图败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SimpleHttpActivity.this, "使用缓存图", Toast.LENGTH_SHORT).show();
                     break;
                 case IMAGE_MSG_NEW_PIC:
                     Bitmap bitmap2 = (Bitmap) msg.obj;
@@ -71,6 +74,9 @@ public class SimpleHttpActivity extends AppCompatActivity implements View.OnClic
                     String text = (String) msg.obj;
                     textView.setText(text);
                     Toast.makeText(SimpleHttpActivity.this, "文本请求成功", Toast.LENGTH_SHORT).show();
+                    break;
+                case FILE_SUCCESS:
+                    Toast.makeText(SimpleHttpActivity.this, "文件下载完毕", Toast.LENGTH_SHORT).show();
                     break;
             }
 
@@ -159,6 +165,10 @@ public class SimpleHttpActivity extends AppCompatActivity implements View.OnClic
                             output.close();
                         if (input != null)
                             input.close();
+                        Message msg = new Message();
+                        msg.what = FILE_SUCCESS;
+                        handler.sendMessage(msg);
+
                     } catch (IOException ignored) {
                     }
                     if (connection != null)
