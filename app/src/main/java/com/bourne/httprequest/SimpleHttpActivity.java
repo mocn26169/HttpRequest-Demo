@@ -2,6 +2,7 @@ package com.bourne.httprequest;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -24,14 +25,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-
 /**
  * HttpURLConnection分别实现图片，文本，文件的请求
  */
 public class SimpleHttpActivity extends AppCompatActivity implements View.OnClickListener {
 
     private String TAG;
-
     private ImageView imageView;
     private TextView textView;
 
@@ -118,10 +117,33 @@ public class SimpleHttpActivity extends AppCompatActivity implements View.OnClic
      */
     private void downloadFile() {
 
+        //请求地址
+        final String urlStr = "http://downloads.jianshu.io/apps/haruki/JianShu-2.2.3-17040111.apk";
+
+        //获取读写状态
+        String state = Environment.getExternalStorageState();
+        //判断读写状态
+        if (!Environment.MEDIA_MOUNTED.equals(state)) {
+            Toast.makeText(SimpleHttpActivity.this, "无法获取SDCard", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //开启下载线程
         new Thread() {
             @Override
             public void run() {
-                String urlStr = "http://dl-cdn.coolapkmarket.com/down/apk_upload/2017/0312/13316bb0a1731665796e1800a5e9e0fa-for-110827-o_1bb14r5991llq19ng3kd145bptfq-uid-704307.apk?_upt=d8a58af21492100572";
+                //获取目录路径
+                File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + "SimpleHttp");
+
+                //创建目录路径
+                if (!directory.exists()) {
+                    boolean isSuccess = directory.mkdirs();
+                    Log.e(TAG, "创建文件夹路径是否成功=" + isSuccess);
+                }
+
+                //创建文件路径（/storage/emulated/0/Download/SimpleHttp/app.apk）
+                File file = new File(directory + "/" + "app.apk");
+                Log.e(TAG, file.getAbsolutePath());
 
                 InputStream input = null;
                 OutputStream output = null;
@@ -129,6 +151,10 @@ public class SimpleHttpActivity extends AppCompatActivity implements View.OnClic
                 try {
                     URL url = new URL(urlStr);
                     connection = (HttpURLConnection) url.openConnection();
+                    connection.setDoInput(true); //允许输入流，即允许下载
+                    connection.setDoOutput(true); //允许输出流，即允许上传
+                    connection.setUseCaches(false); //不使用缓冲
+                    connection.setRequestMethod("GET"); //使用get请求
                     connection.connect();
                     // expect HTTP 200 OK, so we don't mistakenly save error report
                     // instead of the file
@@ -141,7 +167,7 @@ public class SimpleHttpActivity extends AppCompatActivity implements View.OnClic
                     int fileLength = connection.getContentLength();
                     // download the file
                     input = connection.getInputStream();
-                    output = new FileOutputStream("/sdcard/app.apk");
+                    output = new FileOutputStream(file);
                     byte data[] = new byte[4096];
                     long total = 0;
                     int count;
