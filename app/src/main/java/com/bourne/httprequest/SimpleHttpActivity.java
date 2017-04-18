@@ -121,7 +121,7 @@ public class SimpleHttpActivity extends AppCompatActivity implements View.OnClic
         new Thread() {
             @Override
             public void run() {
-                String urlStr = "http://dl-cdn.coolapkmarket.com/down/apk_upload/2017/0312/13316bb0a1731665796e1800a5e9e0fa-for-110827-o_1bb14r5991llq19ng3kd145bptfq-uid-704307.apk?_upt=d8a58af21492100572";
+                String urlStr = "http://downloads.jianshu.io/apps/haruki/JianShu-2.2.3-17040111.apk";
 
                 InputStream input = null;
                 OutputStream output = null;

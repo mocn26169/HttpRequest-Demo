@@ -14,5 +14,9 @@
         android:layout_height="wrap_content"
         android:onClick="simpleHttp"
         android:text="简单的http请求"/>
-
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="SingleThreadDownload"
+        android:text="单线程断点下载"/>
 </LinearLayout>
