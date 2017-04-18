@@ -81,11 +81,8 @@ public class SingleThreadDownloadActivity extends AppCompatActivity {
 
     /**
      * 点击开始
-     *
-     * @param view
      */
     public void onStartClick(View view) {
-
         // 开启
         fileName.setText(getfileName(urlstr));
         // 获得Activity传来的参数
@@ -119,17 +116,17 @@ public class SingleThreadDownloadActivity extends AppCompatActivity {
                 case MSG_INIT:
                     FileInfo fileInfo = (FileInfo) msg.obj;
                     Log.i("test", "INIT:" + fileInfo.toString());
-//                     获取FileInfo對象，开始下载任务
+                    // 获取FileInfo對象，开始下载任务
                     mTask = new DownloadTask(SingleThreadDownloadActivity.this, fileInfo);
                     mTask.download();
                     break;
             }
         }
-
-        ;
     };
 
-    // 初始化下载线程，获得下载文件的信息
+    /**
+     * 开启一个网络连接用来获得下载文件的信息
+     */
     class InitThread extends Thread {
         private FileInfo mFileInfo = null;
 

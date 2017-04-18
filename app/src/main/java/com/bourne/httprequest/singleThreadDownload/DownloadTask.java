@@ -30,6 +30,9 @@ public class DownloadTask {
         this.mDao = new ThreadDAOImple(mComtext);
     }
 
+    /**
+     * 查询数据库上一次下载的信息，有则获取，没有则新建
+     */
     public void download() {
         // 从数据库中获取到下载的信息
         List<ThreadInfo> list = mDao.queryThreads(mFileInfo.getUrl());
@@ -40,6 +43,7 @@ public class DownloadTask {
             info = list.get(0);
 
         }
+        //开启下载任务
         new DownloadThread(info).start();
     }
 
@@ -52,6 +56,7 @@ public class DownloadTask {
 
         @Override
         public void run() {
+            Log.i("test", "开启一个下载任务");
             // 如果数据库不存在下载信息，添加下载信息
             if (!mDao.isExists(threadInfo.getUrl(), threadInfo.getId())) {
                 mDao.insertThread(threadInfo);
@@ -88,7 +93,7 @@ public class DownloadTask {
                         // 设置为500毫米更新一次
                         if (System.currentTimeMillis() - time > 500) {
                             time = System.currentTimeMillis();
-//发送一个广播提示下载的进度
+                            //发送一个广播提示下载的进度
                             Intent intent = new Intent(SingleThreadDownloadActivity.ACTION_UPDATE);
                             //结束的位置/文件长度*100=下载进度百分比
                             intent.putExtra("finished", mFinished * 100 / mFileInfo.getLength());
@@ -129,6 +134,7 @@ public class DownloadTask {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                Log.i("test", "关闭一个下载任务");
             }
             super.run();
         }
