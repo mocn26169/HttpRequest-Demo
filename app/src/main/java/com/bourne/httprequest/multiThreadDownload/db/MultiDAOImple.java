@@ -1,32 +1,33 @@
-package com.bourne.httprequest.singleThreadDownload.db;
+package com.bourne.httprequest.multiThreadDownload.db;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-
 import com.bourne.httprequest.ThreadInfo;
+
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * 數據庫增刪改查的實現類
  *
  */
-public class ThreadDAOImple implements ThreadDAO {
-	private DBHelper dbHelper = null;
+public class MultiDAOImple implements MultiThreadDAO {
+	private MultiDBHelper MultiDBHelper = null;
 
-	public ThreadDAOImple(Context context) {
+	public MultiDAOImple(Context context) {
 		super();
-		this.dbHelper = new DBHelper(context);
+		this.MultiDBHelper = MultiDBHelper.getInstance(context);
 	}
 
 	// 插入綫程
 	@Override
-	public void insertThread(ThreadInfo info) {
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+	public synchronized void insertThread(ThreadInfo info) {
+		SQLiteDatabase db = MultiDBHelper.getReadableDatabase();
 		ContentValues values = new ContentValues();
 		values.put("thread_id", info.getId());
 		values.put("url", info.getUrl());
@@ -40,9 +41,9 @@ public class ThreadDAOImple implements ThreadDAO {
 
 	// 刪除綫程
 	@Override
-	public void deleteThread(String url, int thread_id) {
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		db.delete("thread_info", "url = ? and thread_id = ?", new String[] { url, thread_id + "" });
+	public synchronized void deleteThread(String url) {
+		SQLiteDatabase db = MultiDBHelper.getReadableDatabase();
+		db.delete("thread_info", "url = ?", new String[] { url});
 
 		db.close();
 
@@ -50,8 +51,8 @@ public class ThreadDAOImple implements ThreadDAO {
 
 	// 更新綫程
 	@Override
-	public void updateThread(String url, int thread_id, int finished) {
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+	public synchronized void updateThread(String url, int thread_id, int finished) {
+		SQLiteDatabase db = MultiDBHelper.getReadableDatabase();
 
 		db.execSQL("update thread_info set finished = ? where url = ? and thread_id = ?",
 				new Object[]{finished, url, thread_id});
@@ -61,7 +62,7 @@ public class ThreadDAOImple implements ThreadDAO {
 	// 查詢綫程
 	@Override
 	public List<ThreadInfo> queryThreads(String url) {
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		SQLiteDatabase db = MultiDBHelper.getReadableDatabase();
 
 		List<ThreadInfo> list = new ArrayList<ThreadInfo>();
 
@@ -85,13 +86,13 @@ public class ThreadDAOImple implements ThreadDAO {
 	// 判斷綫程是否爲空
 	@Override
 	public boolean isExists(String url, int thread_id) {
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		SQLiteDatabase db = MultiDBHelper.getReadableDatabase();
 		Cursor cursor = db.query("thread_info", null, "url = ? and thread_id = ?", new String[] { url, thread_id + "" },
 				null, null, null);
 		boolean exists = cursor.moveToNext();
 
 		db.close();
-		db.close();
+		cursor.close();
 		return exists;
 	}
 

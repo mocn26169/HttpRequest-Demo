@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bourne.httprequest.FileInfo;
 import com.bourne.httprequest.R;
 
 import java.io.File;

@@ -1,5 +1,4 @@
-package com.bourne.httprequest.singleThreadDownload.db;
-
+package com.bourne.httprequest.multiThreadDownload.db;
 
 
 import com.bourne.httprequest.ThreadInfo;
@@ -7,18 +6,18 @@ import com.bourne.httprequest.ThreadInfo;
 import java.util.List;
 
 /**
- * 数据库操作的接口类
+ * 數據庫操作的接口類
  *
  */
-public interface ThreadDAO {
-	// 插入线程
+public interface MultiThreadDAO {
+	// 插入綫程
 	public void insertThread(ThreadInfo info);
-	// 刪除线程
-	public void deleteThread(String url, int thread_id);
-	// 更新线程
+	// 刪除綫程
+	public void deleteThread(String url);
+	// 更新綫程
 	public void updateThread(String url, int thread_id, int finished);
-	//查询线程
+	// 查詢綫程
 	public List<ThreadInfo> queryThreads(String url);
-	// 判断线程是否存在
+	// 判斷綫程是否存在
 	public boolean isExists(String url, int threadId);
 }

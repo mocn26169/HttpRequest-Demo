@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.util.Log;
 
 
+import com.bourne.httprequest.FileInfo;
+import com.bourne.httprequest.ThreadInfo;
 import com.bourne.httprequest.singleThreadDownload.db.ThreadDAO;
 import com.bourne.httprequest.singleThreadDownload.db.ThreadDAOImple;
 

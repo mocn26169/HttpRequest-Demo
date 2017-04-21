@@ -11,8 +11,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bourne.httprequest.FileInfo;
 import com.bourne.httprequest.R;
-import com.bourne.httprequest.singleThreadDownload.FileInfo;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.bourne.httprequest.singleThreadDownload;
+package com.bourne.httprequest;
 /**
  *
  *
