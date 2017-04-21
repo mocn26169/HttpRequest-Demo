@@ -1,23 +1,22 @@
 package com.bourne.httprequest;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.bourne.httprequest.singleThreadDownload.FileInfo;
+import com.bourne.httprequest.multiThreadDownload.MultiThreadActivity;
 import com.bourne.httprequest.singleThreadDownload.SingleThreadDownloadActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String urlstr = "http://www.imooc.com/mobile/imooc.apk";
-    private FileInfo fileInfo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SingleThreadDownload(null);
+        MultiThreadDownload(null);
 
     }
 
@@ -29,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SingleThreadDownloadActivity.class);
         startActivity(intent);
     }
-
+    public void MultiThreadDownload(View view) {
+        Intent intent = new Intent(this, MultiThreadActivity.class);
+        startActivity(intent);
+    }
 
 }

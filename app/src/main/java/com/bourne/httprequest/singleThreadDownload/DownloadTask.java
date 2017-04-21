@@ -61,36 +61,38 @@ public class DownloadTask {
             if (!mDao.isExists(threadInfo.getUrl(), threadInfo.getId())) {
                 mDao.insertThread(threadInfo);
             }
-            HttpURLConnection conn = null;
+            HttpURLConnection connection = null;
             RandomAccessFile raf = null;
-            InputStream is = null;
+            InputStream input = null;
             try {
                 URL url = new URL(mFileInfo.getUrl());
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setConnectTimeout(5 * 1000);
-                conn.setRequestMethod("GET");
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setConnectTimeout(5 * 1000);
+                connection.setRequestMethod("GET");
                 //开始位置为getFinished()开始上次结束的位置
                 Log.i("test", "文件的长度"+mFileInfo.getLength()+"   上次结束的位置：" + threadInfo.getFinished());
                 int start = threadInfo.getStart() + threadInfo.getFinished();
                 // 设置下载文件开始到结束的位置（结束的位置也就是文件的长度）
-                conn.setRequestProperty("Range", "bytes=" + start + "-" + threadInfo.getEnd());
+                connection.setRequestProperty("Range", "bytes=" + start + "-" + threadInfo.getEnd());
+                //设置文件下载地址和文件名字
                 File file = new File(SingleThreadDownloadActivity.DownloadPath, mFileInfo.getFileName());
+                //设置输出文件路径
                 raf = new RandomAccessFile(file, "rwd");
                 raf.seek(start);
                 mFinished += threadInfo.getFinished();
 
-                int code = conn.getResponseCode();
+                int code = connection.getResponseCode();
                 if (code == HttpURLConnection.HTTP_PARTIAL) {
-                    is = conn.getInputStream();
-                    byte[] bt = new byte[1024];
-                    int len = -1;
+                    input = connection.getInputStream();
+                    byte[] data = new byte[1024];
+                    int count = -1;
                     // 定义UI刷新时间
                     long time = System.currentTimeMillis();
-                    while ((len = is.read(bt)) != -1) {
-                        raf.write(bt, 0, len);
+                    while ((count = input.read(data)) != -1) {
+                        raf.write(data, 0, count);
                         //记录结束的位置
-                        mFinished += len;
-                        // 设置为500毫米更新一次
+                        mFinished += count;
+                        // 设置为500毫秒更新一次
                         if (System.currentTimeMillis() - time > 500) {
                             time = System.currentTimeMillis();
                             //发送一个广播提示下载的进度
@@ -121,12 +123,12 @@ public class DownloadTask {
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                if (conn != null) {
-                    conn.disconnect();
+                if (connection != null) {
+                    connection.disconnect();
                 }
                 try {
-                    if (is != null) {
-                        is.close();
+                    if (input != null) {
+                        input.close();
                     }
                     if (raf != null) {
                         raf.close();

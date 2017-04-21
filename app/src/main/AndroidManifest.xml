@@ -27,8 +27,6 @@
         </activity>
         <activity android:name=".SimpleHttpActivity">
         </activity>
-        <activity android:name=".singleThreadDownload.SingleThreadDownloadActivity">
-        </activity>
     </application>
 
 </manifest>
